@@ -1,0 +1,109 @@
+
+.container {
+    padding: 20px;
+}
+
+form {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+mat-form-field:nth-child(1) {
+    width: 40%;
+}
+
+mat-form-field:nth-child(2) {
+    width: 20%;
+}
+
+button {
+    height: 3em;
+}
+
+mat-card {
+    margin-bottom: 20px;
+}
+
+
+table {
+    width: 100%;
+    border-spacing: 0;
+
+    tr {
+        transition: .3s;
+    }
+
+    td {
+        padding: 0 15px;
+
+        &.mat-cell {
+            border: none;
+        }
+
+        &.right {
+            text-align: right;
+
+            button {
+                visibility: hidden;
+            }
+        }
+
+
+    }
+
+    .actions {
+        text-align: right;
+    }
+
+    tr:hover {
+        background-color: #607d8b;
+
+        button {
+            visibility: visible;
+        }
+    }
+    
+}
+
+.filter-table {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: 'filter filter buttonGroup';
+
+    .input-filter {
+        grid-area: filter;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        grid-area: buttonGroup;
+        align-items: center;
+
+        mat-button-toggle-group, mat-button-toggle {
+            height: 3em;
+        }
+    }      
+
+}
+
+@media (max-width: 600px) {
+    .filter-table {
+        grid-template-columns: 1fr;
+        grid-template-areas: 'buttonGroup'
+                             'filter';
+    }
+
+    .button-group {
+        justify-content: center !important;
+    }
+
+    .input-filter mat-form-field {
+        width: 80%;
+    }
+
+}
