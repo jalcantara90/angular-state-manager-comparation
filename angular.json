@@ -127,5 +127,8 @@
       }
     }
   },
-  "defaultProject": "team4-training"
+  "defaultProject": "team4-training",
+  "cli": {
+    "analytics": false
+  }
 }

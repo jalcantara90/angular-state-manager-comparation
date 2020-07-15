@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject, merge } from 'rxjs';
-import { map, tap, shareReplay, switchMap, filter } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { FormGroup, FormControl } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Task } from './task.model';
-import { List } from '../shared/list.model';
+import { TaskFacadeService } from './task-facade.service';
 
 @Component({
   selector: 'app-task',
@@ -15,16 +15,12 @@ export class TaskComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
+    private taskFacadeService: TaskFacadeService
   ) { }
 
-  public taskList: List<Task>;
   public taskList$: Observable<Task[]>;
 
-  public filterPending: Subject<void> = new Subject();
-  public filterCompleted: Subject<void> = new Subject();
-  public showAll: Subject<void> = new Subject();
   public onSubmit: Subject<any> = new Subject();
-  public updateTask: Subject<Task> = new Subject();
 
   public taskForm: FormGroup = new FormGroup({
     description: new FormControl('')
@@ -36,57 +32,84 @@ export class TaskComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.taskList = new List([
-      new Task('Photos','pending'),
-      new Task('Recipes','pending'),
-      new Task('Work','pending'),
-      new Task('Vacation Itinerary','completed'),
-      new Task('Kitchen Remodel','completed'),
-    ]);
+    // this.taskList = new List([
+    //   new Task('Photos','pending'),
+    //   new Task('Recipes','pending'),
+    //   new Task('Work','pending'),
+    //   new Task('Vacation Itinerary','completed'),
+    //   new Task('Kitchen Remodel','completed'),
+    // ]);
 
-    const all$ = this.showAll.pipe(switchMap(() => this.taskList.data$));
-    
-    const completed$ = this.filterCompleted.pipe(
-      switchMap(() => this.taskList.data$.pipe(
-        map((list: Task[]) => list.filter(task => task.status === 'completed'))
-      ))
-    );
+    // const all$ = this.showAll.pipe(switchMap(() => this.taskList.data$));
 
-    const pending$ = this.filterPending.pipe(
-      switchMap(() => this.taskList.data$.pipe(
-        map((list: Task[]) => list.filter(task => task.status === 'pending'))
-      ))
-    );
+    // const completed$ = this.filterCompleted.pipe(
+    //   switchMap(() => this.taskList.data$.pipe(
+    //     map((list: Task[]) => list.filter(task => task.status === 'completed'))
+    //   ))
+    // );
 
-    const addTask$ = this.onSubmit.pipe(
-      filter(() => this.taskForm.valid),
-      map(() => this.taskForm.value),
-      tap(({description}) => {
-        const newTask: Task = new Task(description, 'pending');
-        this.taskList.addTop(newTask);
+    // const pending$ = this.filterPending.pipe(
+    //   switchMap(() => this.taskList.data$.pipe(
+    //     map((list: Task[]) => list.filter(task => task.status === 'pending'))
+    //   ))
+    // );
 
-        this.taskForm.get('description').reset();
-      }),
-      switchMap(() => this.taskList.data$)
-    );
+    // const addTask$ = this.onSubmit.pipe(
+    //   filter(() => this.taskForm.valid),
+    //   map(() => this.taskForm.value),
+    //   tap(({description}) => {
+    //     const newTask: Task = new Task(description, 'pending');
+    //     this.taskList.addTop(newTask);
 
-    const updateTask$ = this.updateTask.pipe(
-      tap(task => {
-        task = task.toogleStatus();
-        this.taskList.updateById(task.id, task);
-      }),
-      switchMap(() => this.taskList.data$)
-    );
+    //     this.taskForm.get('description').reset();
+    //   }),
+    //   switchMap(() => this.taskList.data$)
+    // );
 
-    this.taskList$ = merge(
-      this.taskList.data$,
-      all$,
-      completed$,
-      pending$,
-      addTask$,
-      updateTask$
-    );
+    // const updateTask$ = this.updateTask.pipe(
+    //   tap(task => {
+    //     task = task.toogleStatus();
+    //     this.taskList.updateById(task.id, task);
+    //   }),
+    //   switchMap(() => this.taskList.data$)
+    // );
 
+    // this.taskList$ = merge(
+    //   this.taskList.data$,
+    //   all$,
+    //   completed$,
+    //   pending$,
+    //   addTask$,
+    //   updateTask$
+    // );
+
+    this.taskList$ = this.taskFacadeService.taskList$;
+  }
+
+  showAll() {
+    this.taskFacadeService.showAll();
+  }
+
+  showCompleted() {
+    this.taskFacadeService.showCompleted();
+  }
+
+  showPending() {
+    this.taskFacadeService.showPending();
+  }
+
+  addToTop(form: FormGroup) {
+    const task = new Task(form.get('description').value, 'pending');
+    this.taskFacadeService.addToTop(task);
+    this.taskForm.reset();
+  }
+
+  updateTask(taskId: string) {
+    this.taskFacadeService.updateTask(taskId);
+  }
+
+  deleteTask(taskId: string) {
+    this.taskFacadeService.deleteTask(taskId);
   }
 
 }
