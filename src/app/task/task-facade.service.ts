@@ -11,6 +11,10 @@ export class TaskFacadeService implements TaskFacadeInterface {
 
   constructor(private rxjsService: TaskStateRxjsService) { }
 
+  getTask() {
+    this.rxjsService.getTask();
+  }
+
   showAll() {
     this.rxjsService.showAll();
   }
@@ -27,8 +31,8 @@ export class TaskFacadeService implements TaskFacadeInterface {
     this.rxjsService.addToTop(task);
   }
 
-  updateTask(taskId: string) {
-    this.rxjsService.updateStatusTask(taskId);
+  updateTask(task: Task) {
+    this.rxjsService.updateStatusTask(task);
   }
 
   deleteTask(taskId: string) {

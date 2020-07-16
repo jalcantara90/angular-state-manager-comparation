@@ -5,6 +5,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Task } from './task.model';
 import { TaskFacadeService } from './task-facade.service';
+import { TaskNgrxStoreFacadeService } from '../ngrx-store/task-ngrx-store-facade.service';
 
 @Component({
   selector: 'app-task',
@@ -15,12 +16,11 @@ export class TaskComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private taskFacadeService: TaskFacadeService
+    private taskFacadeService: TaskFacadeService,
+    private taskNgrxFacadeService: TaskNgrxStoreFacadeService
   ) { }
 
   public taskList$: Observable<Task[]>;
-
-  public onSubmit: Subject<any> = new Subject();
 
   public taskForm: FormGroup = new FormGroup({
     description: new FormControl('')
@@ -32,84 +32,35 @@ export class TaskComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    // this.taskList = new List([
-    //   new Task('Photos','pending'),
-    //   new Task('Recipes','pending'),
-    //   new Task('Work','pending'),
-    //   new Task('Vacation Itinerary','completed'),
-    //   new Task('Kitchen Remodel','completed'),
-    // ]);
+    this.taskList$ = this.taskNgrxFacadeService.taskList$;
 
-    // const all$ = this.showAll.pipe(switchMap(() => this.taskList.data$));
-
-    // const completed$ = this.filterCompleted.pipe(
-    //   switchMap(() => this.taskList.data$.pipe(
-    //     map((list: Task[]) => list.filter(task => task.status === 'completed'))
-    //   ))
-    // );
-
-    // const pending$ = this.filterPending.pipe(
-    //   switchMap(() => this.taskList.data$.pipe(
-    //     map((list: Task[]) => list.filter(task => task.status === 'pending'))
-    //   ))
-    // );
-
-    // const addTask$ = this.onSubmit.pipe(
-    //   filter(() => this.taskForm.valid),
-    //   map(() => this.taskForm.value),
-    //   tap(({description}) => {
-    //     const newTask: Task = new Task(description, 'pending');
-    //     this.taskList.addTop(newTask);
-
-    //     this.taskForm.get('description').reset();
-    //   }),
-    //   switchMap(() => this.taskList.data$)
-    // );
-
-    // const updateTask$ = this.updateTask.pipe(
-    //   tap(task => {
-    //     task = task.toogleStatus();
-    //     this.taskList.updateById(task.id, task);
-    //   }),
-    //   switchMap(() => this.taskList.data$)
-    // );
-
-    // this.taskList$ = merge(
-    //   this.taskList.data$,
-    //   all$,
-    //   completed$,
-    //   pending$,
-    //   addTask$,
-    //   updateTask$
-    // );
-
-    this.taskList$ = this.taskFacadeService.taskList$;
+    this.taskNgrxFacadeService.getTask();
   }
 
   showAll() {
-    this.taskFacadeService.showAll();
+    this.taskNgrxFacadeService.showAll();
   }
 
   showCompleted() {
-    this.taskFacadeService.showCompleted();
+    this.taskNgrxFacadeService.showCompleted();
   }
 
   showPending() {
-    this.taskFacadeService.showPending();
+    this.taskNgrxFacadeService.showPending();
   }
 
   addToTop(form: FormGroup) {
     const task = new Task(form.get('description').value, 'pending');
-    this.taskFacadeService.addToTop(task);
+    this.taskNgrxFacadeService.addToTop(task);
     this.taskForm.reset();
   }
 
-  updateTask(taskId: string) {
-    this.taskFacadeService.updateTask(taskId);
+  updateTask(task: Task) {
+    this.taskNgrxFacadeService.updateTask(task);
   }
 
   deleteTask(taskId: string) {
-    this.taskFacadeService.deleteTask(taskId);
+    this.taskNgrxFacadeService.deleteTask(taskId);
   }
 
 }

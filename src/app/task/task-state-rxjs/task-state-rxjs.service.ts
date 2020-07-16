@@ -15,10 +15,14 @@ const INITIAL_STATE = [
 })
 export class TaskStateRxjsService {
   state = INITIAL_STATE;
-  private taskList = new BehaviorSubject(INITIAL_STATE);
+  private taskList = new BehaviorSubject([]);
   taskList$ = this.taskList.asObservable();
 
   constructor() {}
+
+  getTask() {
+    this.taskList.next(this.state);
+  }
 
   showAll() {
     this.taskList.next(this.state);
@@ -39,8 +43,8 @@ export class TaskStateRxjsService {
     this.taskList.next(this.state);
   }
 
-  updateStatusTask(taskId: string) {
-    const updatedTask = this.state.find(task => task.id === taskId);
+  updateStatusTask(task: Task) {
+    const updatedTask = this.state.find(t => t.id === task.id);
     updatedTask.toogleStatus();
     this.taskList.next(this.state);
   }

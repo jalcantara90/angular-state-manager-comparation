@@ -129,6 +129,7 @@
   },
   "defaultProject": "team4-training",
   "cli": {
-    "analytics": false
+    "analytics": "1e401a32-b25a-4140-9a13-7a00867a184d",
+    "defaultCollection": "@ngrx/schematics"
   }
 }
