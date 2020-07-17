@@ -6,6 +6,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Task } from './task.model';
 import { TaskFacadeService } from './task-facade.service';
 import { TaskNgrxStoreFacadeService } from '../ngrx-store/task-ngrx-store-facade.service';
+import { TaskAkitaStoreFacadeService } from '../akita-store/task-akita-store-facade.service';
 
 @Component({
   selector: 'app-task',
@@ -17,7 +18,8 @@ export class TaskComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private taskFacadeService: TaskFacadeService,
-    private taskNgrxFacadeService: TaskNgrxStoreFacadeService
+    private taskNgrxFacadeService: TaskNgrxStoreFacadeService,
+    private taskAkitaFacadeService: TaskAkitaStoreFacadeService
   ) { }
 
   public taskList$: Observable<Task[]>;
@@ -32,35 +34,35 @@ export class TaskComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.taskList$ = this.taskNgrxFacadeService.taskList$;
+    this.taskList$ = this.taskAkitaFacadeService.taskList$;
 
-    this.taskNgrxFacadeService.getTask();
+    this.taskAkitaFacadeService.getTask();
   }
 
   showAll() {
-    this.taskNgrxFacadeService.showAll();
+    this.taskAkitaFacadeService.showAll();
   }
 
   showCompleted() {
-    this.taskNgrxFacadeService.showCompleted();
+    this.taskAkitaFacadeService.showCompleted();
   }
 
   showPending() {
-    this.taskNgrxFacadeService.showPending();
+    this.taskAkitaFacadeService.showPending();
   }
 
   addToTop(form: FormGroup) {
     const task = new Task(form.get('description').value, 'pending');
-    this.taskNgrxFacadeService.addToTop(task);
+    this.taskAkitaFacadeService.addToTop(task);
     this.taskForm.reset();
   }
 
   updateTask(task: Task) {
-    this.taskNgrxFacadeService.updateTask(task);
+    this.taskAkitaFacadeService.updateTask(task);
   }
 
   deleteTask(taskId: string) {
-    this.taskNgrxFacadeService.deleteTask(taskId);
+    this.taskAkitaFacadeService.deleteTask(taskId);
   }
 
 }

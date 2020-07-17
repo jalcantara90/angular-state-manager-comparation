@@ -4,7 +4,7 @@ import * as fromTask from './task.reducer';
 import { loadTasks, addTask, deleteTask, updateTask } from './task.actions';
 import { Task } from '../task/task.model';
 import { allTask, completedTask, pendingTask } from './task.selectors';
-import { map, switchMap, delay } from 'rxjs/operators';
+import { map, switchMap, shareReplay } from 'rxjs/operators';
 import { Subject, Observable, merge } from 'rxjs';
 
 @Injectable({
@@ -15,8 +15,7 @@ export class TaskNgrxStoreService {
   showAllSubject: Subject<Task[]> = new Subject();
   showAll$: Observable<Task[]> = this.showAllSubject.asObservable().pipe(
     switchMap(() => this.store.pipe(
-      select(allTask),
-      delay(0)
+      select(allTask)
     ))
   );
   showCompleteSubject: Subject<Task[]> = new Subject();
@@ -37,7 +36,8 @@ export class TaskNgrxStoreService {
     this.showComplete$,
     this.showPending$
   ).pipe(
-    map(taskList => taskList.map( task => new Task(task.description, task.status, task.id)))
+    map(taskList => taskList.map( task => new Task(task.description, task.status, task.id))),
+    shareReplay()
   );
 
   constructor(private store: Store<fromTask.State>) { }
@@ -52,7 +52,8 @@ export class TaskNgrxStoreService {
         new Task('Kitchen Remodel', 'completed'),
       ]
     }));
-    setTimeout(() => this.showAll());
+
+    this.showAll();
   }
 
   showAll() {
