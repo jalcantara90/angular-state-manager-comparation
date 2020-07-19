@@ -7,7 +7,6 @@ export interface TaskState extends EntityState<Task, string> {}
 @Injectable({ providedIn: 'root' })
 @StoreConfig({ name: 'tasks' })
 export class TaskStore extends EntityStore<TaskState> {
-
   constructor() {
     super();
   }

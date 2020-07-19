@@ -17,6 +17,10 @@ import { reducers, metaReducers } from './reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { TaskStateService } from './ngxs-store/task-state.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +29,7 @@ import { environment } from '../environments/environment';
     TaskComponent
   ],
   imports: [
-    BrowserModule,
+  BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
@@ -38,7 +42,13 @@ import { environment } from '../environments/environment';
         strictActionImmutability: true,
       }
     }),
-    !environment.production ? StoreDevtoolsModule.instrument() : []
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    NgxsModule.forRoot([TaskStateService], {
+      developmentMode: !environment.production
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot({
+      disabled: environment.production
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

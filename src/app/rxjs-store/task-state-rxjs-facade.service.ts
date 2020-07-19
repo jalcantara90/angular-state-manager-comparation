@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TaskStateRxjsService } from './task-state-rxjs/task-state-rxjs.service';
-import { Task } from './task.model';
-import { TaskFacadeInterface } from './task-facade.interface';
+import { TaskStateRxjsService } from './task-state-rxjs.service';
+import { Task } from '../task/task.model';
+import { TaskFacadeInterface } from '../shared/task-facade.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class TaskFacadeService implements TaskFacadeInterface {
     this.rxjsService.showPending();
   }
 
-  addToTop(task: Task) {
+  addTask(task: Task) {
     this.rxjsService.addToTop(task);
   }
 

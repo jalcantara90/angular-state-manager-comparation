@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { FormGroup, FormControl } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Task } from './task.model';
-import { TaskFacadeService } from './task-facade.service';
+import { TaskFacadeService } from '../rxjs-store/task-state-rxjs-facade.service';
 import { TaskNgrxStoreFacadeService } from '../ngrx-store/task-ngrx-store-facade.service';
 import { TaskAkitaStoreFacadeService } from '../akita-store/task-akita-store-facade.service';
+import { NgxsStoreFacadeService } from '../ngxs-store/ngxs-store-facade.service';
 
 @Component({
   selector: 'app-task',
@@ -17,12 +18,13 @@ export class TaskComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private taskFacadeService: TaskFacadeService,
-    private taskNgrxFacadeService: TaskNgrxStoreFacadeService,
-    private taskAkitaFacadeService: TaskAkitaStoreFacadeService
+    // private taskFacadeService: TaskFacadeService, // uncomment to use RxJS based state
+    private taskFacadeService: TaskNgrxStoreFacadeService, // uncomment to use NGRX state
+    // private taskFacadeService: TaskAkitaStoreFacadeService, // uncomment to use Akita based state
+    // private taskFacadeService: NgxsStoreFacadeService // uncomment to use NGXS state
   ) { }
 
-  public taskList$: Observable<Task[]>;
+  public taskList$: Observable<Task[]> = this.taskFacadeService.taskList$;
 
   public taskForm: FormGroup = new FormGroup({
     description: new FormControl('')
@@ -34,35 +36,33 @@ export class TaskComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.taskList$ = this.taskAkitaFacadeService.taskList$;
-
-    this.taskAkitaFacadeService.getTask();
+    this.taskFacadeService.getTask();
   }
 
   showAll() {
-    this.taskAkitaFacadeService.showAll();
+    this.taskFacadeService.showAll();
   }
 
   showCompleted() {
-    this.taskAkitaFacadeService.showCompleted();
+    this.taskFacadeService.showCompleted();
   }
 
   showPending() {
-    this.taskAkitaFacadeService.showPending();
+    this.taskFacadeService.showPending();
   }
 
-  addToTop(form: FormGroup) {
+  addTask(form: FormGroup) {
     const task = new Task(form.get('description').value, 'pending');
-    this.taskAkitaFacadeService.addToTop(task);
+    this.taskFacadeService.addTask(task);
     this.taskForm.reset();
   }
 
   updateTask(task: Task) {
-    this.taskAkitaFacadeService.updateTask(task);
+    this.taskFacadeService.updateTask(task);
   }
 
   deleteTask(taskId: string) {
-    this.taskAkitaFacadeService.deleteTask(taskId);
+    this.taskFacadeService.deleteTask(taskId);
   }
 
 }

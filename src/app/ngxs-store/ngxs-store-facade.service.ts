@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { TaskFacadeInterface } from '../shared/task-facade.interface';
-import { Subject, merge, combineLatest } from 'rxjs';
+import { Observable, Subject, merge, combineLatest } from 'rxjs';
 import { Task } from '../task/task.model';
+import { Store, Select } from '@ngxs/store';
+import { TaskStateService } from './task-state.service';
+import { GetTaskList, AddTask, RemoveTask, UpdateTask } from './task.actions';
 import { map, mapTo, startWith } from 'rxjs/operators';
-import { TaskQuery } from './task.query';
-import { TaskStore } from './task.store';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskAkitaStoreFacadeService implements TaskFacadeInterface {
+export class NgxsStoreFacadeService implements TaskFacadeInterface {
 
-  public showAll$ = this.taskQuery.selectAll();
+  @Select(TaskStateService.showAll) showAll$: Observable<Task[]>;
 
   private showAllSubject = new Subject();
-  private showCompleteSubject = new Subject();
   private showPendingSubject = new Subject();
+  private showCompleteSubject = new Subject();
 
   private filteringActions$ = merge(
     this.showAllSubject,
@@ -33,43 +34,39 @@ export class TaskAkitaStoreFacadeService implements TaskFacadeInterface {
     )
   );
 
-  constructor(
-    private taskQuery: TaskQuery,
-    private taskStore: TaskStore
-  ) {}
+  constructor(private store: Store) { }
 
-  getTask() {
-    this.taskStore.add([
+  public getTask(): void {
+    this.store.dispatch(new GetTaskList([
       new Task('Photos', 'pending'),
       new Task('Recipes', 'pending'),
       new Task('Work', 'pending'),
       new Task('Vacation Itinerary', 'completed'),
       new Task('Kitchen Remodel', 'completed'),
-    ]);
+    ]));
   }
 
-  showAll() {
+  public showAll(): void {
     this.showAllSubject.next();
   }
 
-  showCompleted() {
+  public showCompleted(): void {
     this.showCompleteSubject.next();
   }
 
-  showPending() {
+  public showPending(): void {
     this.showPendingSubject.next();
   }
 
-  addTask(task: Task) {
-    this.taskStore.add(task);
+  public addTask(task: Task): void {
+    this.store.dispatch(new AddTask(task));
   }
 
-  updateTask(task: Task) {
-    task.toogleStatus();
-    this.taskStore.replace(task.id, task);
+  public updateTask(task: Task): void {
+    this.store.dispatch(new UpdateTask(task));
   }
 
-  deleteTask(taskId: string) {
-    this.taskStore.remove(taskId);
+  public deleteTask(taskId: string): void {
+    this.store.dispatch(new RemoveTask(taskId));
   }
 }

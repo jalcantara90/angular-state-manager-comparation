@@ -2,7 +2,7 @@
 	<h1 class="mat-h1">Task</h1>
 	<mat-card>
 		<mat-card-content>
-			<form [formGroup]="taskForm" (ngSubmit)="addToTop(taskForm)">
+			<form [formGroup]="taskForm" (ngSubmit)="addTask(taskForm)">
 				<mat-form-field appearance="standard">
 					<mat-label>Description</mat-label>
 					<input formControlName="description" matInput>

@@ -3,50 +3,50 @@ import { Update } from '@ngrx/entity';
 import { Task } from '../task/task.model';
 
 export const loadTasks = createAction(
-  '[Task/API] Load Tasks',
+  '[Task NGRX] Load Tasks',
   props<{ tasks: Task[] }>()
 );
 
 export const addTask = createAction(
-  '[Task/API] Add Task',
+  '[Task NGRX] Add Task',
   props<{ task: Task }>()
 );
 
 export const upsertTask = createAction(
-  '[Task/API] Upsert Task',
+  '[Task NGRX] Upsert Task',
   props<{ task: Task }>()
 );
 
 export const addTasks = createAction(
-  '[Task/API] Add Tasks',
+  '[Task NGRX] Add Tasks',
   props<{ tasks: Task[] }>()
 );
 
 export const upsertTasks = createAction(
-  '[Task/API] Upsert Tasks',
+  '[Task NGRX] Upsert Tasks',
   props<{ tasks: Task[] }>()
 );
 
 export const updateTask = createAction(
-  '[Task/API] Update Task',
+  '[Task NGRX] Update Task',
   props<{ task: Update<Task> }>()
 );
 
 export const updateTasks = createAction(
-  '[Task/API] Update Tasks',
+  '[Task NGRX] Update Tasks',
   props<{ tasks: Update<Task>[] }>()
 );
 
 export const deleteTask = createAction(
-  '[Task/API] Delete Task',
+  '[Task NGRX] Delete Task',
   props<{ id: string }>()
 );
 
 export const deleteTasks = createAction(
-  '[Task/API] Delete Tasks',
+  '[Task NGRX] Delete Tasks',
   props<{ ids: string[] }>()
 );
 
 export const clearTasks = createAction(
-  '[Task/API] Clear Tasks'
+  '[Task NGRX] Clear Tasks'
 );

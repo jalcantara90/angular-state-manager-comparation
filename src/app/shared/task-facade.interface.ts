@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Task } from './task.model';
+import { Task } from '../task/task.model';
 
 export interface TaskFacadeInterface {
   taskList$: Observable<Task[]>;
@@ -8,7 +8,7 @@ export interface TaskFacadeInterface {
   showAll: () => void;
   showCompleted: () => void;
   showPending: () => void;
-  addToTop: (task: Task) => void;
+  addTask: (task: Task) => void;
   updateTask: (task: Task) => void;
   deleteTask: (taskId: string) => void;
 }
