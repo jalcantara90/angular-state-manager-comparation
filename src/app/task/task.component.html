@@ -2,17 +2,17 @@
 	<h1 class="mat-h1">Task</h1>
 	<mat-card>
 		<mat-card-content>
-			<form [formGroup]="taskForm" (ngSubmit)="onSubmit.next()">
+			<form [formGroup]="taskForm" (ngSubmit)="addTask(taskForm)">
 				<mat-form-field appearance="standard">
 					<mat-label>Description</mat-label>
 					<input formControlName="description" matInput>
 				</mat-form-field>
 
-				<button 
+				<button
 					[disabled]="!taskForm.get('description').value || !taskForm.get('description').value.length"
 					type="submit"
-					mat-stroked-button color="basic"> 
-					ADD TASK 
+					mat-stroked-button color="basic">
+					ADD TASK
 				</button>
 			</form>
 		</mat-card-content>
@@ -25,13 +25,13 @@
 
 				<div class="button-group">
 					<mat-button-toggle-group #group="matButtonToggleGroup">
-						<mat-button-toggle (click)="showAll.next()" value="all">
+						<mat-button-toggle (click)="showAll()" value="all">
 							All
 						</mat-button-toggle>
-						<mat-button-toggle (click)="filterPending.next()" value="pending">
+						<mat-button-toggle (click)="showPending()" value="pending">
 							Pending
 						</mat-button-toggle>
-						<mat-button-toggle (click)="filterCompleted.next()" value="completed">
+						<mat-button-toggle (click)="showCompleted()" value="completed">
 							Completed
 						</mat-button-toggle>
 					</mat-button-toggle-group>
@@ -42,10 +42,10 @@
 				<tbody>
 					<tr *ngFor="let task of taskList$ | async">
 						<td>
-							<mat-checkbox 
+							<mat-checkbox
 								color="primary"
 								[checked]="task.isComplete"
-								(change)="updateTask.next(task)">
+								(change)="updateTask(task)">
 							</mat-checkbox>
 						</td>
 						<td>{{task.description}}</td>
@@ -54,12 +54,12 @@
 							<button color="accent" mat-icon-button>
 								<mat-icon>edit</mat-icon>
 							</button>
-							<button (click)="taskList.removeById(task.id)" color="accent" mat-icon-button>
+							<button (click)="deleteTask(task.id)" color="accent" mat-icon-button>
 								<mat-icon>delete_outline</mat-icon>
 							</button>
 						</td>
 						<td class="actions" *ngIf="(isHandset$ | async)">
-							<button 
+							<button
 								class="more-button"
 								mat-icon-button
 								[matMenuTriggerFor]="menu"
@@ -68,7 +68,7 @@
 							</button>
 							<mat-menu #menu="matMenu" xPosition="before">
 								<button color="accent" mat-menu-item>Edit</button>
-								<button (click)="taskList.removeById(task.id)" color="accent" mat-menu-item>Delete</button>
+								<button (click)="deleteTask(task.id)" color="accent" mat-menu-item>Delete</button>
 							</mat-menu>
 						</td>
 					</tr>

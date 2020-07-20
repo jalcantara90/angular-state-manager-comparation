@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject, merge } from 'rxjs';
-import { map, tap, shareReplay, switchMap, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { FormGroup, FormControl } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Task } from './task.model';
-import { List } from '../shared/list.model';
+import { TaskFacadeService } from '../rxjs-store/task-state-rxjs-facade.service';
+import { TaskNgrxStoreFacadeService } from '../ngrx-store/task-ngrx-store-facade.service';
+import { TaskAkitaStoreFacadeService } from '../akita-store/task-akita-store-facade.service';
+import { NgxsStoreFacadeService } from '../ngxs-store/ngxs-store-facade.service';
 
 @Component({
   selector: 'app-task',
@@ -15,16 +18,13 @@ export class TaskComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
+    // private taskFacadeService: TaskFacadeService, // uncomment to use RxJS based state
+    private taskFacadeService: TaskNgrxStoreFacadeService, // uncomment to use NGRX state
+    // private taskFacadeService: TaskAkitaStoreFacadeService, // uncomment to use Akita based state
+    // private taskFacadeService: NgxsStoreFacadeService // uncomment to use NGXS state
   ) { }
 
-  public taskList: List<Task>;
-  public taskList$: Observable<Task[]>;
-
-  public filterPending: Subject<void> = new Subject();
-  public filterCompleted: Subject<void> = new Subject();
-  public showAll: Subject<void> = new Subject();
-  public onSubmit: Subject<any> = new Subject();
-  public updateTask: Subject<Task> = new Subject();
+  public taskList$: Observable<Task[]> = this.taskFacadeService.taskList$;
 
   public taskForm: FormGroup = new FormGroup({
     description: new FormControl('')
@@ -36,57 +36,33 @@ export class TaskComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.taskList = new List([
-      new Task('Photos','pending'),
-      new Task('Recipes','pending'),
-      new Task('Work','pending'),
-      new Task('Vacation Itinerary','completed'),
-      new Task('Kitchen Remodel','completed'),
-    ]);
+    this.taskFacadeService.getTask();
+  }
 
-    const all$ = this.showAll.pipe(switchMap(() => this.taskList.data$));
-    
-    const completed$ = this.filterCompleted.pipe(
-      switchMap(() => this.taskList.data$.pipe(
-        map((list: Task[]) => list.filter(task => task.status === 'completed'))
-      ))
-    );
+  showAll() {
+    this.taskFacadeService.showAll();
+  }
 
-    const pending$ = this.filterPending.pipe(
-      switchMap(() => this.taskList.data$.pipe(
-        map((list: Task[]) => list.filter(task => task.status === 'pending'))
-      ))
-    );
+  showCompleted() {
+    this.taskFacadeService.showCompleted();
+  }
 
-    const addTask$ = this.onSubmit.pipe(
-      filter(() => this.taskForm.valid),
-      map(() => this.taskForm.value),
-      tap(({description}) => {
-        const newTask: Task = new Task(description, 'pending');
-        this.taskList.addTop(newTask);
+  showPending() {
+    this.taskFacadeService.showPending();
+  }
 
-        this.taskForm.get('description').reset();
-      }),
-      switchMap(() => this.taskList.data$)
-    );
+  addTask(form: FormGroup) {
+    const task = new Task(form.get('description').value, 'pending');
+    this.taskFacadeService.addTask(task);
+    this.taskForm.reset();
+  }
 
-    const updateTask$ = this.updateTask.pipe(
-      tap(task => {
-        task = task.toogleStatus();
-        this.taskList.updateById(task.id, task);
-      }),
-      switchMap(() => this.taskList.data$)
-    );
+  updateTask(task: Task) {
+    this.taskFacadeService.updateTask(task);
+  }
 
-    this.taskList$ = merge(
-      this.taskList.data$,
-      all$,
-      completed$,
-      pending$,
-      addTask$,
-      updateTask$
-    );
-
+  deleteTask(taskId: string) {
+    this.taskFacadeService.deleteTask(taskId);
   }
 
 }

@@ -1,6 +1,4 @@
 <mat-sidenav-container class="sidenav-container">
-
-
     <mat-sidenav #drawer class="sidenav" fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -22,11 +20,10 @@
           *ngIf="isHandset$ | async">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <span>team4-training</span>
+        <span>Comparación entre state managers</span>
       </mat-toolbar>
       <!-- Add Content Here -->
       <router-outlet></router-outlet>
-      
-    </mat-sidenav-content>
 
+    </mat-sidenav-content>
 </mat-sidenav-container>
