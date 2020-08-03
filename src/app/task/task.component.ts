@@ -18,8 +18,8 @@ export class TaskComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    // private taskFacadeService: TaskFacadeService, // uncomment to use RxJS based state
-    private taskFacadeService: TaskNgrxStoreFacadeService, // uncomment to use NGRX state
+    private taskFacadeService: TaskFacadeService, // uncomment to use RxJS based state
+    // private taskFacadeService: TaskNgrxStoreFacadeService, // uncomment to use NGRX state
     // private taskFacadeService: TaskAkitaStoreFacadeService, // uncomment to use Akita based state
     // private taskFacadeService: NgxsStoreFacadeService // uncomment to use NGXS state
   ) { }

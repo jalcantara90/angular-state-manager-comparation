@@ -5,7 +5,7 @@
 			<form [formGroup]="taskForm" (ngSubmit)="addTask(taskForm)">
 				<mat-form-field appearance="standard">
 					<mat-label>Description</mat-label>
-					<input formControlName="description" matInput>
+					<input formControlName="description" matInput autocomplete="off">
 				</mat-form-field>
 
 				<button
