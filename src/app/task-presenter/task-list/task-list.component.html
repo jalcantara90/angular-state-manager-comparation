@@ -1,0 +1,36 @@
+<table>
+  <tbody>
+    <tr *ngFor="let task of taskList">
+      <td>
+        <mat-checkbox
+          color="primary"
+          [checked]="task.isComplete"
+          (change)="updateTask(task)">
+        </mat-checkbox>
+      </td>
+      <td>{{task.description}}</td>
+      <td> {{task.status}} </td>
+      <td class="right" *ngIf="!isHandset">
+        <button color="accent" mat-icon-button>
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button (click)="deleteTask(task.id)" color="accent" mat-icon-button>
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </td>
+      <td class="actions" *ngIf="isHandset">
+        <button
+          class="more-button"
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          aria-label="Toggle menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button color="accent" mat-menu-item>Edit</button>
+          <button (click)="deleteTask(task.id)" color="accent" mat-menu-item>Delete</button>
+        </mat-menu>
+      </td>
+    </tr>
+  </tbody>
+</table>

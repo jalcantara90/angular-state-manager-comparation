@@ -11,7 +11,8 @@ const routes: Routes = [
     component: NavigationComponent,
     children: [
       { path: '', component: DashboardComponent },
-      { path: 'task', component: TaskComponent }
+      { path: 'task', component: TaskComponent },
+      { path: 'presenter', loadChildren: () => import('./task-presenter/task-presenter.module').then(m => m.TaskPresenterModule) }
     ]
   },
 

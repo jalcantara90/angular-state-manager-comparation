@@ -1,0 +1,20 @@
+<div class="container">
+	<h1 class="mat-h1">Task</h1>
+	<app-task-creator (add)="addTask($event)"></app-task-creator>
+
+	<mat-card>
+		<mat-card-content>
+      <app-task-filter
+        (filter)="taskFilter($event)">
+      </app-task-filter>
+
+      <app-task-list
+        [taskList]="taskList$ | async"
+        [isHandset]="isHandset$ | async"
+        (delete)="deleteTask($event)"
+        (update)="updateTask($event)">
+      </app-task-list>
+
+		</mat-card-content>
+	</mat-card>
+</div>
